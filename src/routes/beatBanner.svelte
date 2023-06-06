@@ -7,23 +7,23 @@
   let osc1, amp1;
   $: if(audioCtx && !beatsInit){
     beatsInit = true;
-    osc1 = new OscillatorNode(audioCtx, {
-      type: 'sine',
-      frequency: 640
-    });
     amp1 = new GainNode(audioCtx, {value: 1});
     let lfo = new OscillatorNode(audioCtx, {
       type: "square",
-      frequency: 40,
+      frequency: 79,
     });
-
     lfo.connect(amp1.gain);
-    osc1.connect(amp1).connect(audioCtx.destination);
     lfo.start(0);
+    amp1.connect(audioCtx.destination);
   }
-  function playNote(time){
+  export function playNote(freq, time, length){
+    osc1 = new OscillatorNode(audioCtx, {
+      type: 'sine',
+      frequency: freq
+    });
+    osc1.connect(amp1);
     osc1.start(time);
-    osc1.stop(time + 1);
+    osc1.stop(time + length);
   }
   
 </script>
@@ -50,3 +50,7 @@
     <animate attributeName="x" values="10;0;" dur="10s" repeatCount="indefinite"></animate>
   </rect>
 </svg>
+
+<button on:click={playNote(audioCtx.currentTime)}>
+  press
+</button>
