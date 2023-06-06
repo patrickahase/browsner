@@ -1,14 +1,16 @@
 <script>
-  import MetronomeWorker from './metronomeworker.js?worker';
+  import Patterns from "./patterns.svelte";
+
+  export let seqPat;
   export let playNote;
   /* Adapted from https://github.com/cwilso/metronome/blob/main/js/metronome.js */
   /* See https://web.dev/audio-scheduling/ for reference */
   export let audioCtx;
-  $: if(audioCtx){ init() } // run when audio init
+  $: if(audioCtx){ play(); handleResize(); } // run when audio init
   let isPlaying = false; // playback state
   let startTime; // beginning of sequence
   let current16thNote; // last scheduled note ! change freq and name
-  let tempo = 120.0; // bpm
+  let tempo = 160.0; // bpm
   let lookahead = 25.0; //(ms) calliung schedule freq
   let scheduleAheadTime = 0.1; //(s) how far ahead to schedule
   let nextNoteTime = 0.0; // when the next note is due.
@@ -16,7 +18,7 @@
   let noteLength = 0.05; // length of "beep" (in seconds)
   let notesInQueue = []; // the notes that have been put into the web audio,
                          // and may or may not have played yet. {note, time}
-  let timerWorker = null; // The Web Worker used to fire timer messages
+  let timerID; // timing interval
 
   function nextNote(){
     // Advance current note and time by a 16th note...
@@ -27,7 +29,7 @@
   }
 
   
-  function scheduleNote( beatNumber, time, osc ) {
+  function scheduleNote( beatNumber, time ) {
       // push the note on the queue, even if we're not playing.
       notesInQueue.push( { note: beatNumber, time: time } );
 
@@ -37,7 +39,13 @@
           return; // we're not playing non-quarter 8th notes
 
       // create an oscillator
-      playNote(240, time, noteLength);
+      
+
+      // run through defined voices and play any needed notes
+      /* seqPat.forEach(oscVoice => {
+        
+      }); */
+      if(seqPat[0].pattern[beatNumber]){playNote(240, time, noteLength);}
   }
 
   function scheduler() {
@@ -47,34 +55,34 @@
           scheduleNote( current16thNote, nextNoteTime );
           nextNote();
       }
+      timerID = setTimeout(scheduler, lookahead);
+      
   }
 
   function play() {
     isPlaying = !isPlaying;
 
-    if (isPlaying) { // start playing
-        current16thNote = 0;
-        nextNoteTime = audioCtx.currentTime;
-        timerWorker.postMessage("start");
-        return "stop";
-    } else {
-        timerWorker.postMessage("stop");
-        return "play";
-    }
+    current16thNote = 0;
+    nextNoteTime = audioCtx.currentTime;
+    scheduler(); // kick off scheduling
+    
   }
 
-  function init(){
-    timerWorker = new MetronomeWorker();
-    timerWorker.onmessage = function(e) {
-        if (e.data == "tick") {
-            console.log("tick!");
-            scheduler();
-        }
-        else
-            console.log("message: " + e.data);
-    };
-    timerWorker.postMessage({"interval":lookahead});
+  function handleResize(){
+    let widthPercent = window.innerWidth / screen.width;
+    /* while(width >  160){*/
+    /*   width /= 2; */
+    /* } */
+    /* tempo = width; */
+    tempo = 160 - remapRange(widthPercent, 0, 1, 0, 70);
   }
 
-  
+  function remapRange(input, low1, high1, low2, high2){
+    return low2 + (high2 - low2) * (input - low1) / (high1 - low1);
+  }
+    
 </script>
+
+<Patterns bind:seqPat={seqPat}/>
+
+<svelte:window on:resize={handleResize} />

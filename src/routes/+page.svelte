@@ -3,8 +3,6 @@
     import Modal from "./modal.svelte";
     import Sequencer from "./sequencer.svelte";
 
-    import * as pattern from "./pattern.json";
-
     // set up audioContext
     let audioCtx;
     // MODAL
@@ -14,7 +12,6 @@
     export let seqTest;
     $: if(!showModal && !audioCtx){
       audioCtx = new AudioContext();
-      console.log(pattern)
     }
     export let playNote;
     //test siblings functions
@@ -28,3 +25,5 @@
 </Modal>
 <BeatBanner bind:audioCtx bind:playNote={playNote} />
 <Sequencer bind:seqTest={seqTest} audioCtx={audioCtx} playNote={playNote} />
+
+
