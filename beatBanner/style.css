@@ -1,0 +1,14 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+/* MODAL */
+#welcomeModal{
+  margin: auto;
+}
+#welcomeModal::backdrop{
+  background-color: rgba(0, 0, 0, 0.169);
+}
+
+/*  */
