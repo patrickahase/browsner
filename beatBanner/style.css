@@ -11,4 +11,28 @@
   background-color: rgba(0, 0, 0, 0.169);
 }
 
+section {
+  height: 7vw;
+  overflow-x: hidden;
+}
+
 /*  */
+#colourOverlay{
+  height: 100%;
+  width: 6.75%;
+  background-color: salmon;
+}
+
+.beat-character{
+  position: absolute;
+  left: 0%;
+  top: 0%;
+  width: 6.75%;
+  font-size: 5vw;
+  text-align: center;
+  animation: testAnim 4s linear;
+}
+
+@keyframes testAnim {
+  100% {left: 100%;}
+}

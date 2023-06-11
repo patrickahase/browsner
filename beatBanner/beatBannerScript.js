@@ -9,7 +9,15 @@ function audioInit() {
 }
 
 function triggerBeat(){
-  console.log("beat");
+  let newBeatCharacter = document.createElement('p');
+  newBeatCharacter.classList.add("beat-character");
+  newBeatCharacter.textContent = "@";
+  newBeatCharacter.addEventListener("animationend", () => {
+    //console.log("end");
+    newBeatCharacter.remove();
+  });
+  document.getElementById("bannerSection").appendChild(newBeatCharacter);
+  // trigger next beat
   setTimeout(triggerBeat, 60000/(tempo*barDivider));
 }
 

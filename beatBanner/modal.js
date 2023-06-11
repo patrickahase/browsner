@@ -4,6 +4,6 @@ modal.showModal();
 let startButton = document.getElementById("startButton");
 startButton.addEventListener("click", () => {
   // from audioContext.js - starts the audio system
-  //audioInit();
+  audioInit();
   modal.close();
 });
