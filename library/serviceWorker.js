@@ -19,8 +19,8 @@ self.addEventListener('fetch', (e) => {
 self.addEventListener('message', (e) => {
   //console.log(e.source.id);
   // first time tab connection
-  console.log(check);
-  console.log(e.data);
+  /* console.log(check); */
+  /* console.log(e.data); */
   messageDictionary[e.data](e);
   if(e.data === "end"){
     check = true;
@@ -88,27 +88,29 @@ const messageDictionary = {
   init: function(e) {
     /* add it to the state */
     // tabsConnected.push(e.source.id);
-    tabsConnected = clients.matchAll({ includeUncontrolled: true });
+    /* tabsConnected = clients.matchAll({ includeUncontrolled: true }); */
+    /* find all connections and update number */
     clients.matchAll({ includeUncontrolled: true }).then((clientList) => {
-      for (const client of clientList) {
-        console.log(client)
-      }
+      for (let client of clientList){
+        sendMessage({
+          connections: clientList.length
+        }, client.id);
+      }      
     });
     
     /* send message back */
-    sendMessage({
+    /* sendMessage({
       freq: 1
-    }, e.source.id);
+    }, e.source.id); */
   },
   end: function(e) {
-    /* find id in array */
-    console.log("some")
-    let index = tabsConnected.indexOf(tabsConnected.push[e.source.id]);
-    console.log(index);
-    /* if index found */
-    if (index > -1) {
-      /* remove id based on index index */
-      tabsConnected.splice(index, 1);
-    }
+    /* find all connections and update number */
+    clients.matchAll({ includeUncontrolled: true }).then((clientList) => {
+      for (let client of clientList){
+        sendMessage({
+          connections: clientList.length
+        }, client.id);
+      }      
+    });
   }
 }

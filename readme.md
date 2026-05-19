@@ -9,3 +9,7 @@
 
 > Project
 - tab-voices to try together
+
+## Issues
+- I have beforeunload working most of the time
+- poll service worker regularly to get proper update? maybe less regular based on above

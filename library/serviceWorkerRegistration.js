@@ -12,14 +12,12 @@ const registerServiceWorker = async () => {
       }
       navigator.serviceWorker.addEventListener('message', e => {
         console.log(e.data);
-        if(e.data.freq) {
-          inputFreq = e.data.freq;
-        }
+        clientMessageDictionary["connections"](e);
         //
       });
       /* add tab closing msg */
       window.addEventListener('beforeunload', () =>{
-        registration.active.postMessage("init");
+        registration.active.postMessage("end");
       });
     } catch (error) {
       console.error(`Registration failed with ${error}`);
@@ -30,3 +28,10 @@ const registerServiceWorker = async () => {
 };
 
 registerServiceWorker();
+
+const clientMessageDictionary = {
+  /* on new tab connect */
+  connections: function(e) {
+    document.title = e.data.connections;
+  }
+}
